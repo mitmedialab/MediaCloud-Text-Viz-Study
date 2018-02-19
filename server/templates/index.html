@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div>
+    <form action="{{ url_for('index') }}" method="post">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <h1> Media Cloud User Study </h1>
+            <p> Thank you for participating in our user study. </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <input type="submit" value="Click Here to Begin" class="btn btn-primary">
+          </div>
+        </div>
+        <input type="hidden" name="step" value="consent">
+      </div>
+    </form>
+  </div>
+{% endblock %}

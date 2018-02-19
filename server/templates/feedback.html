@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div>
+    <form action="{{ url_for('index') }}" method="post">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <h1> Thank your for your time. </h1>
+            <p>
+                If you have any additional comments or feedback on your experience
+                completing the tasks, please share in the space below.
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8">
+            <textarea style="width: 100%;" type="text" name="general_feedback" rows="7">
+            </textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8">
+            <input type="submit" value="Submit" class="btn btn-primary float-right">
+          </div>
+        </div>
+        <input type="hidden" name="info" value="{{ info }}">
+        <input type="hidden" name="step" value="thanks">
+      </div>
+    </form>
+  </div>
+{% endblock %}
