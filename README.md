@@ -11,7 +11,6 @@ Dev Installation
    * on OSX: `source venv/bin/activate`
    * on Windows: `call venv\Scripts\activate`
  * run `pip install -r requirements.txt` to install dependencies
- * run `python download-google-news-model.py` to download the google news model file
 
  Running
  -------
