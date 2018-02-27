@@ -5,25 +5,154 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-12">
-              <h1> Tutorial </h1>
+              <h1> Getting Started... </h1>
+              <br>
               <p>
-                Please familiarize yourself with the visualization techniques that will
-                be used in this study by watching the short tutorial below. When you are
-                satisfied with your understanding of the different visualizations and how
-                they may be used to detect subtopics, you may begin the study by clicking
-                on the 'Start' button.
+                Thanks for helping with this short study! We want you to imagine
+                you are researching how the media covered the 2014 Ebola outbreak
+                by looking at what words they use. Researchers often examine
+                language to try and identify how media talks about an issue
+                differently. We want you to try to do that using a visualization
+                of the words.
               </p>
-              <h1> VIDEO HERE </h1>
+              <p>
+                We want you to look at a visualization that shows the top 50
+                words used in a set of news articles that focus on the topic of
+                the Ebola outbreak. Using this visualization, we want you to try
+                and pick sets of words that identify different ways the media is
+                talking about the topic.
+              </p>
+              {% if viz_type == "standard" %}
+                <p>
+                  The visualization you will use to perform this task is called
+                  a <b>word cloud</b>, or <b>tag cloud</b>. The position
+                  of each word is random. The size of a word reflects how often
+                  it is used across news articles. Bigger words were used more
+                  often; smaller words were used less often. The color of a word
+                  shows the same thing; the darker it is, the more it was used.
+                  If you hover a word, it will be highlighted to make it easier
+                  to read.
+                </p>
+              {% elif viz_type == "rollover" %}
+                <p>
+                  The visualization you will use to perform this task is called
+                  a <b>similarity word cloud</b>. The position of each word is random.
+                  The size of a word reflects how often it is used across news
+                  articles. Bigger words were used more often; smaller words
+                  were used less often. The color of a word shows the same thing;
+                  the darker it is, the more it was used. When hovering over to
+                  highlight a word, related words are also highlighted.
+                  The bluer a related word is, the more similar it is to the
+                  word you are hovering over. The ‘relatedness’ is based on some
+                  complicated computations about how often words are used together.
+                </p>
+              {% elif viz_type == "word2vec" %}
+                <p>
+                  The visualization you will use to perform this task is called
+                  <b>the word space</b>. This visualization determines the position of
+                  a word based on how related it is to other words.
+                  The ‘relatedness’ is based on some complicated computations about
+                  how often words are used together.
+                </p>
+                <p>
+                  The size of a word reflects how often it is used across news
+                  articles. Bigger words were used more often; smaller words were
+                  used less often. The color of a word shows the same thing; the
+                  darker it is, the more it was used.
+                </p>
+                <p>
+                  If you hover over a word, related words are also highlighted.
+                  You will also notice a dark gray cone appear. Words within this
+                  cone are related to the word you are hovering over. Words outside
+                  this cone are not related to it very much. The darker a related
+                  word is, the more related it is.
+                </p>
+              {% endif %}
+              <br>
+              <hr>
+              <br>
+              <p>
+                Below is an example visualization for news articles focusing on
+                climate change.
+                Take some time to interact with the visualization and get a feel
+                for how it works. When you are ready, click the 'Start' button
+                below to begin the study.
+              </p>
             </div>
           </div>
+          <br>
+          <br>
+          <div class="row">
+            <div class="col-lg-12" id="svg-container">
+              <svg id="{{ viz_type }}" style="width: 100%;">
+              </svg>
+            </div>
+          </div>
+          <br>
+          <hr>
+          <br>
           <div class="row">
             <div class="col-lg-12">
-              <input type="submit" value="Let's Start!" class="btn btn-primary">
+              <input type="submit" value="Start" class="btn btn-primary float-right">
             </div>
           </div>
-          <input type="hidden" name="step" value="viz1">
-          <input type="hidden" name="info" value="{{ info }}">
+          <input type="hidden" name="step" value="viz">
+          <input type="hidden" name="viz_type" value="{{ viz_type }}">
+          <input type="hidden" name="user_id" value="{{ user_id }}">
         </div>
       </form>
     </div>
+    <script src="{{ url_for('static', filename='js/d3.layout.cloud.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/rolloverCloud.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/standardCloud.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/word2vecCloud.js') }}"></script>
+    <script type="text/javascript">
+      $.ajax({
+        method: 'GET',
+        url: '/vizTutorialData.json',
+        contentType: 'application/json',
+        success: (data) => {
+          switch({{ viz_type|tojson|safe }}) {
+            case 'rollover':
+              var options = {
+                height: 500,
+                cloudDomId: '#rollover',
+                minColor: '#d9d9d9',
+                maxColor: '#000000',
+                minFontSize: '18',
+                maxFontSize: '72',
+              };
+              generateRolloverCloud(options, data);
+              break;
+            case 'standard':
+              var options = {
+                height: 500,
+                cloudDomId: '#standard',
+                minColor: '#d9d9d9',
+                maxColor: '#000000',
+                minFontSize: '18',
+                maxFontSize: '72',
+              };
+              generateStandardCloud(options, data);
+              break;
+            case 'word2vec':
+              var options = {
+                  width: 800,
+                  height: 800,
+                  cloudDomId: '#word2vec',
+                  minColor: '#bab8b8',//'#d9d9d9',
+                  maxColor: '#000000',
+                  minFontSize: '18',
+                  maxFontSize: '72',
+                  xProperty: 'w2v_x',
+                  yProperty: 'w2v_y',
+                };
+                generateWord2vecCloud(options, data);
+              break;
+            default:
+              break;
+          }
+        }
+      });
+    </script>
 {% endblock %}

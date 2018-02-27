@@ -4,7 +4,9 @@
       <div class="row">
         <div class="col-lg-12">
           <h1 id="title"></h1>
-          <p> add a brief reminder of how viz works </p>
+          {% if viz_type != 'standard' %}
+          <p> Hover over a word to see related words within the topic. </p>
+          {% endif %}
         </div>
       </div>
       <br>
@@ -15,7 +17,7 @@
       </p>
       <div class="row">
         <div class="col-lg-12" id="svg-container">
-          <svg style="width: 100%;">
+          <svg id="{{ viz_type }}" style="width: 100%;">
           </svg>
         </div>
       </div>
@@ -100,23 +102,14 @@
             <input type="submit" value="Submit" class="btn btn-primary float-right">
           </div>
         </div>
-        <input type="hidden" name="info" value="{{ info }}">
-        {% if step == "viz1" %}
-          <input type="hidden" name="step" value="viz2">
-        {% elif step == "viz2" %}
-          <input type="hidden" name="step" value="viz3">
-        {% elif step == "viz3" %}
-          <input type="hidden" name="step" value="feedback">
-        {% endif %}
+        <input type="hidden" name="step" value="feedback">
+        <input type="hidden" name="viz_type" value="{{ viz_type }}">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <input type="hidden" name="start_time" value="{{ start_time }}">
       </form>
     </div>
 
     <!-- JavaScript -->
-    <script>
-      var info = {{ info|tojson|safe }}; // only json string, not object
-      var vizType = $.parseJSON(info).viz_type;
-      $('svg').attr('id', vizType);
-    </script>
     <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       // Source: https://getbootstrap.com/docs/4.0/components/forms/#custom-styles
@@ -148,7 +141,7 @@
         url: '/vizData.json',
         contentType: 'application/json',
         success: (data) => {
-          switch(vizType) {
+          switch({{ viz_type|tojson|safe }}) {
             case 'rollover':
               $('#title').text('Similarity Word Cloud');
               var options = {
@@ -174,7 +167,7 @@
               generateStandardCloud(options, data);
               break;
             case 'word2vec':
-              $('#title').text('Word2Vec Cloud');
+              $('#title').text('Word Space');
               var options = {
                   width: 800,
                   height: 800,
