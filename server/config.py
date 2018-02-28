@@ -21,6 +21,11 @@ class ProductionConfig(Config):
     except KeyError:
         DATABASE_URI = None
         logger.warn("No DATABASE_URI in your environment!")
+    try:
+        SENTRY_DSN = os.environ['SENTRY_DSN']
+    except KeyError:
+        SENTRY_DSN = None
+        logger.warn("No SENTRY_DSN in your environment!")
     ECHO = False
 
 
@@ -28,6 +33,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     ECHO = False
     DATABASE_URI = 'sqlite:///:memory:'
+    SENTRY_DSN = 'https://f76add8c109841ec970c729fea904afb:18bce5e9506347118cea36fbac4e9970@sentry.io/295983'
 
 
 def is_prod_mode():
