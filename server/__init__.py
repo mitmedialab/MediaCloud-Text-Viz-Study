@@ -1,13 +1,15 @@
 import os
 import sys
 import logging.config
-import json
-import datetime
-from flask import Flask, render_template, jsonify, request
-
+from flask import Flask
+from raven.conf import setup_logging
+from raven.contrib.flask import Sentry
+from raven.handlers.logging import SentryHandler
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+
+from config import is_prod_mode
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,8 +24,21 @@ logger.info('Starting web app')
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('server.config.DevelopmentConfig')
+    if config.is_prod_mode():
+        app.config.from_object('server.config.ProductionConfig')
+    else:
+        app.config.from_object('server.config.DevelopmentConfig')
+    # Set up sentry logging
+    if app.config['SENTRY_DSN'] is not None:
+        handler = SentryHandler(app.config['SENTRY_DSN'])
+        handler.setLevel(logging.ERROR)
+        setup_logging(handler)
+        Sentry(app, dsn=app.config['SENTRY_DSN'])
+        logger.info('Logging to Sentry')
+    else:
+        logger.info('No Sentry logging')
     return app
+
 
 def init_db():
     # import all modules here that might define models so that
@@ -43,9 +58,11 @@ Base.query = db_session.query_property()
 init_db()
 logger.info('---- Database initialized ----')
 
+
 # TODO: not sure if this should go here or in survey.py
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
+
 
 import server.views.survey
