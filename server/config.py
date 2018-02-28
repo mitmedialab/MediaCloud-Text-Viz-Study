@@ -1,9 +1,11 @@
+import os
+
 class Config(object):
     DEBUG = False
     TESTING = False
 
 class ProductionConfig(Config):
-    DATABASE_URI = 'mysql://user@localhost/foo'
+    DATABASE_URI = os.environ['DATABASE_URI']
     ECHO = False
 
 class DevelopmentConfig(Config):

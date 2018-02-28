@@ -2,6 +2,7 @@ import os
 import logging
 import json
 import datetime
+import random
 from flask import render_template, jsonify, request
 
 from server import app, db_session, base_dir
@@ -29,57 +30,36 @@ def index():
         new_user = User(consent=True)
         db_session.add(new_user)
         db_session.commit()
-        info = {"user_id": new_user.id}
-        return render_template('tutorial.html', info=json.dumps(info), step='tutorial')
-
-    # Step 3: Visualization 1
-    if request.form['step'] == 'viz1':
-        logger.debug('Request to visualization page')
-        info = json.loads(request.form['info'])
-        # TODO: Randomize and/or serialize order of viz types
-        current_user_id = info['user_id']
+        user_id = new_user.id
+        print(user_id)
+        # TODO: Randomize or serialize...?
         viz_types = map(lambda x: x.name, list(VizType))
-        # info[viz_type] = viz_types[current_user_id % len(viz_types)]
-        info['viz_order'] = viz_types
-        # update info for next viz
-        info['viz_type'] = info['viz_order'][0]
-        info['start_time'] = str(datetime.datetime.now())
-        return render_template('viz.html', info=json.dumps(info), step='viz1')
+        # viz_type = viz_types[random.randint(0, 2)]
+        viz_type = viz_types[user_id % len(viz_types)]
 
-    # Step 4: Visualization 2
-    if request.form['step'] == 'viz2':
+        return render_template('tutorial.html', step='tutorial', user_id=user_id, viz_type=viz_type)
+
+    # Step 3: Visualization
+    if request.form['step'] == 'viz':
         logger.debug('Request to visualization page')
-        save_viz_response(request) # save response from previous page (viz 1)
-        # update info for next viz
-        info = json.loads(request.form['info'])
-        info['viz_type'] = info['viz_order'][1]
-        info['start_time'] = str(datetime.datetime.now())
-        return render_template('viz.html', info=json.dumps(info), step='viz2')
+        user_id = request.form['user_id']
+        viz_type = request.form['viz_type']
+        start_time = str(datetime.datetime.now())
+        return render_template('viz.html', step='viz', user_id=user_id, viz_type=viz_type, start_time=start_time)
 
-    # Step 5: Visualization 3
-    if request.form['step'] == 'viz3':
-        logger.debug('Request to visualization page')
-        save_viz_response(request) # save response from previous page (viz 2)
-        # update info for next viz
-        info = json.loads(request.form['info'])
-        info['viz_type'] = info['viz_order'][2]
-        info['start_time'] = str(datetime.datetime.now())
-        return render_template('viz.html', info=json.dumps(info), step='viz3')
-
-    # Step 6: Feedback
+    # Step 4: Feedback
     if request.form['step'] == 'feedback':
         logger.debug('Request to feedback page')
-        save_viz_response(request) # save response from previous page (viz 3)
-        info = json.loads(request.form['info'])
-        info = {'user_id': info['user_id']}
-        return render_template('feedback.html', info=json.dumps(info), step='feedback')
+        save_viz_response(request) # save response from previous page (viz)
+        user_id = request.form['user_id']
+        return render_template('feedback.html', step='feedback', user_id=user_id)
 
-    # Step 7: Thank you
+    # Step 5: Thank you
     if request.form['step'] == 'thanks':
         logger.debug('Request to thank-you page')
         # Save feedback to database
         feedback = request.form['general_feedback']
-        current_user_id = json.loads(request.form['info'])['user_id']
+        current_user_id = request.form['user_id']
         current_user = db_session.query(User).filter(User.id == current_user_id).first()
         current_user.feedback = feedback
         db_session.commit()
@@ -95,10 +75,10 @@ def save_viz_response(request):
     theme2_word1 = request.form['theme2_word1']
     theme2_word2 = request.form['theme2_word2']
     theme2_word3 = request.form['theme2_word3']
-    info = json.loads(request.form['info'])
-    viz_type = info['viz_type']
-    current_user_id = info['user_id']
-    start_time = info['start_time']
+    # info = json.loads(request.form['info'])
+    viz_type = request.form['viz_type']
+    current_user_id = request.form['user_id']
+    start_time = request.form['start_time']
     end_time = str(datetime.datetime.now())
 
     # Add to database
@@ -109,6 +89,18 @@ def save_viz_response(request):
 
     current_user.responses.append(user_response)
     db_session.commit()
+
+
+# TODO: combine into one function...?
+@app.route('/vizTutorialData.json', methods=['GET'])
+def vizTutorialData():
+    logger.debug('Request to tutorial visualization data')
+
+    file_path = os.path.join(base_dir, 'server/static/vizTutorialData.json')
+    with open(file_path) as viz_data:
+        results = json.load(viz_data)
+
+    return jsonify(results)
 
 
 @app.route('/vizData.json', methods=['GET'])

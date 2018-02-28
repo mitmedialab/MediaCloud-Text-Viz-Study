@@ -43,7 +43,6 @@ var generateStandardCloud = function(options, wordList) {
             .on('mouseover', function(d) {
               d3.select(this).transition().duration(200)
                              .attr('fill', '#0000ff')
-                             .attr('font-size', fontScale(d.tfnorm)*1.5)
                              .attr('font-weight', 'bold');
               // moves element to front
               d3.select(this).raise();
@@ -52,7 +51,6 @@ var generateStandardCloud = function(options, wordList) {
               // return everything back to normal
               d3.select(this).transition().duration(100)
                              .attr('fill', colorScale(d.tfnorm))
-                             .attr('font-size', fontScale(d.tfnorm))
                              .attr('font-weight', 'normal');
             });
     })

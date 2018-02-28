@@ -37,7 +37,7 @@ except IndexError:
     logging.error('You need to specify a topic id as an argument.')
     sys.exit(0)
 
-NUM_WORDS = 75
+NUM_WORDS = 50
 COS_SIM_THRESHOLD = 0.95  # approx. equal to cos(18 degs)
 
 
