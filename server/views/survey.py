@@ -26,15 +26,20 @@ def index():
     # Step 2: Tutorial Video
     if request.form['step'] == 'tutorial':
         logger.debug('Request to tutorial page')
+
         # Create new user and save to database
         new_user = User(consent=True)
         db_session.add(new_user)
         db_session.commit()
+
+        # Update new user's cookie and ip address
         user_id = new_user.id
-        print(user_id)
-        # TODO: Randomize or serialize...?
+        new_user.cookie = 'MC_TEXT_VIZ_USER_{}'.format(user_id)
+        new_user.ip_address = request.remote_addr
+        db_session.commit()
+
+        # Select visualization type
         viz_types = map(lambda x: x.name, list(VizType))
-        # viz_type = viz_types[random.randint(0, 2)]
         viz_type = viz_types[user_id % len(viz_types)]
 
         return render_template('tutorial.html', step='tutorial', user_id=user_id, viz_type=viz_type)

@@ -6,6 +6,8 @@ from server import Base
 class User(Base):
     __tablename__ = 'users'
     id = Column('user_id', Integer, primary_key=True)
+    cookie = Column('cookie', String(250))
+    ip_address = Column('ip_address', String(250))
     consent = Column('consent', Boolean)
     responses = relationship('Response')
     feedback = Column('feedback', String(250))
