@@ -10,13 +10,14 @@ from server.models.user import User, Response, VizType
 
 logger = logging.getLogger(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if 'step' not in request.form:
         logger.debug('Request to homepage')
         return render_template('index.html')
 
-    print(request.form['step'])
+    logger.debug(request.form['step'])
 
     # Step 1: Consent Form
     if request.form['step'] == 'consent':
@@ -41,6 +42,7 @@ def index():
 
     # Step 3: Visualization
     if request.form['step'] == 'viz':
+        # set a unique cookie here!
         logger.debug('Request to visualization page')
         user_id = request.form['user_id']
         viz_type = request.form['viz_type']
