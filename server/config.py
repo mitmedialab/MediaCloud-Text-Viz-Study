@@ -31,7 +31,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    ECHO = False
+    ECHO = True
     DATABASE_URI = 'sqlite:///:memory:'
 
 

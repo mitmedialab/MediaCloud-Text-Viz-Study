@@ -2,15 +2,22 @@
 {% block body %}
     <div>
       <div class="row">
+        <div class="col-lg-12" style="text-align: center">
+          <b>*** DO NOT refresh this page or click the back button ***</b>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="row">
         <div class="col-lg-12">
           <h1 id="title"></h1>
           <p>Here is a visualization of the words online media used to report on the Ebola outbreak in 2014.
             {% if viz_type != 'standard' %}
-            Hover over a word with your mouse pointer and you'll related words will be highlighed in blue.
+            Hover over a word with your mouse pointer and related words will be highlighed in blue.
             {% endif %}
             Try to find the main words that
             might identify 2 different ways the media talking about the topic. Enter three main words in the form below, along
-            with a name your might give to that theme (based on the words that you think define it).
+            with a name you might give to that theme (based on the words that you think define it).
           </p>
         </div>
       </div>
@@ -32,7 +39,7 @@
       <!--  NOTE: remove class="needs-validation" for quick debugging -->
       <form action="{{ url_for('index') }}" method="post" class="needs-validation" novalidate>
         <div class="form-row">
-          <div class="col-md-6 mb-6">
+          <div class="col-md-6 mb-5">
             <label for="theme1"><b>Theme 1</b> - <i></i></label>
             <input type="text" class="form-control form-control-lg" name="theme1" placeholder="Enter a short name for this theme" required>
             <div class="invalid-feedback">
@@ -66,7 +73,7 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="col-md-6 mb-6">
+          <div class="col-md-6 mb-5">
             <label for="theme2"><b>Theme 2</b></label>
             <input type="text" name="theme2" placeholder="Enter a short name for this theme" class="form-control form-control-lg" required>
             <div class="invalid-feedback">
@@ -105,6 +112,13 @@
         <div class="row">
           <div class="col-lg-12">
             <input type="submit" value="Submit" class="btn btn-primary float-right">
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+          <div class="col-lg-12" style="text-align: center">
+            <b>*** DO NOT refresh this page or click the back button ***</b>
           </div>
         </div>
         <input type="hidden" name="step" value="feedback">
