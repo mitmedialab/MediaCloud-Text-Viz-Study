@@ -44,7 +44,7 @@ def init_db():
     # import all modules here that might define models so that
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
-    from server.models.user import User, Response
+    from server.models.user import User
     Base.metadata.create_all(bind=engine)
 
 # Set up app and database
@@ -59,7 +59,6 @@ init_db()
 logger.info('---- Database initialized ----')
 
 
-# TODO: not sure if this should go here or in survey.py
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
