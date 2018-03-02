@@ -8,93 +8,40 @@
               <h1> Getting Started... </h1>
               <br>
               <p>
-                Thanks for helping us with this short study! Start by imagining
-                you are researching how the media covered the 2014 Ebola outbreak.
-                  Researchers often examine the specific words media uses in order to
-                  identify the different ways  that online media talk about an issue.
-                  We have designed a visualization of these words to help!
+                Researchers often look at the words used by the media to understand how a topic is covered. We will show you a visualization of words used by media and we want you to try to find different converstations in the media about the topic, based on the key words you see.
               </p>
-              <p>
-                You'll be looking at a visualization that shows the top 50
-                words used in a set of news articles that focus on the topic of
-                the Ebola outbreak. Using this visualization, we want you to try
-                and find the main words that might identify 2 different ways the media is
-                talking about the topic.
-              </p>
-              <div class="row">
-                <div class="col-lg-7">
-                  {% if viz_type == "standard" %}
-                    <img src="{{ url_for('static', filename='img/standard_static.png') }}">
-                  {% elif viz_type == "rollover" %}
-                    <img src="{{ url_for('static', filename='img/similar_static.png') }}">
-                  {% elif viz_type == "word2vec" %}
-                    <img src="{{ url_for('static', filename='img/space_static.png') }}" style="height: 80%; width: 80%;">
-                  {% endif %}
-                </div>
-                <div class="col-lg-5">
-                  {% if viz_type == "standard" %}
-                    <p>
-                      The visualization you will use to perform this task is called
-                      a <b>word cloud</b>, or <b>tag cloud</b>. The position
-                      of each word is random. The size of a word reflects how often
-                      it is used across news articles. Bigger words were used more
-                      often; smaller words were used less often. The color of a word
-                      shows the same thing; the darker it is, the more it was used.
-                      If you hover a word, it will be highlighted to make it easier
-                      to read.
-                    </p>
-                    {% elif viz_type == "rollover" %}
-                      <p>
-                        The visualization you will use to perform this task is called
-                        a <b>similarity word cloud</b>. The position of each word is random.
-                        The size of a word reflects how often it is used across news
-                        articles. Bigger words were used more often; smaller words
-                        were used less often. The color of a word shows the same thing;
-                        the darker it is, the more it was used. When hovering over to
-                        highlight a word, related words are also highlighted.
-                        The bluer a related word is, the more similar it is to the
-                        word you are hovering over. The ‘relatedness’ is based on some
-                        complicated computations about how often words are used together.
-                      </p>
-                    {% elif viz_type == "word2vec" %}
-                      <p>
-                        The visualization you will use to perform this task is called
-                        <b>the word space</b>. This visualization determines the position of
-                        a word based on how related it is to other words.
-                        The ‘relatedness’ is based on some complicated computations about
-                        how often words are used together.
-                      </p>
-                      <p>
-                        The size of a word reflects how often it is used across news
-                        articles. Bigger words were used more often; smaller words were
-                        used less often. The color of a word shows the same thing; the
-                        darker it is, the more it was used.
-                      </p>
-                      <p>
-                        If you hover over a word, related words are also highlighted.
-                        You will also notice a dark gray cone appear. Words within this
-                        cone are related to the word you are hovering over. Words outside
-                        this cone are not related to it very much. The darker a related
-                        word is, the more related it is.
-                      </p>
-                    {% endif %}
-                </div>
-              </div>
-
-
+              {% if viz_type == "standard" %}
+                <p>
+                  This visualization is called a <b>word cloud</b>. Here is one about reporting on climate change. Bigger and darker words are used more often; smaller and lighter words are used less often. As you can see, <b>climate</b> and <b>global</b> are the most used words.
+                </p>
+                <p>
+                  When you hover over a word with your mouse, it turns <b>blue</b> to make it easier to read.
+                </p>
+                <p>
+                  You can try to identify different conversations by looking at words that go together.  Starting with bigger words, we can see that "clinton", "trump", and "obama"; that suggests a <i>political</i> conversation. A different conversionsation could be about <i>alternative energy</i> - indicated by "sustainable", "solar", and "renewable". This is the information we want you to identify and enter.
+                <p>
+              {% elif viz_type == "rollover" %}
+                <p>
+                  This visualization is called a <b>word cloud</b>. Here is one about reporting on climate change. Bigger and darker words are used more often; smaller and ligher words are used less often. As you can see, <b>climate</b> and <b>global</b> are the most used words.
+                </p>
+                <p>
+                  When you hover over a word with your mouse, it turns <b>blue</b> to make it easier to read. Words that are often used together with that word also turn blue.  This 'relatedness' is based on an algorithmic analysis of how words are used together.
+                <p>
+                <p>
+                  You can try to identify different conversations by looking at words that are related.  For instance, if you rollover "trump", then "obama" and "clinton" turn blue; you might name this a <i>political</i> conversation. Rollover "sustainable" and you'll see "renewable" and "solar" turn blue; you might name this an <i>alternative energy</i> conversation.
+                <p>
+              {% elif viz_type == "word2vec" %}
+                <p>
+                  This visualization is called the <b>word space</b>. Here is one about reporting on climate change. Bigger and darker words are used more often; smaller and ligher words are used less often. As you can see, <b>climate</b> and <b>global</b> are the most used words.
+                </p>
+                <p>
+                  When you hover over a word with your mouse, it turns <b>blue</b> to make it easier to read. Words that turn blue, and are within the dark background cone, are all used in simlar ways. This 'similarity' is based on an algorithmic analysis of how all the words are used together.
+                <p>
+                <p>
+                  You can try to identify different conversations by looking at words that are related.  For instance, if you rollover "trump", then "obama" and "clinton" turn blue; you might name this a <i>political</i> conversation. Rollover "emissions" and you'll see "climate" and "china" turn blue; you might name this an <i>emissions negotiation</i> conversation.
+                <p>
+              {% endif %}
               <br>
-              <hr>
-              <br>
-                <h2>Try An Example</h2>
-              <p>
-                Below is an example visualization for news articles focusing on
-                climate change.
-                Take some time to interact with the visualization and get a feel
-                for how it works. When you are ready, click the 'Start' button
-                below to begin the study. Once you have started, <b>DO NOT</b>
-                refresh the page or click the back button otherwise your response
-                will be disregarded.
-              </p>
             </div>
           </div>
           <br>
@@ -110,7 +57,7 @@
           <br>
           <div class="row">
             <div class="col-lg-12">
-              <input type="submit" value="Start" class="btn btn-primary float-right">
+              <input type="submit" value="Try it!" class="btn btn-primary float-right">
             </div>
           </div>
           <input type="hidden" name="step" value="viz">
