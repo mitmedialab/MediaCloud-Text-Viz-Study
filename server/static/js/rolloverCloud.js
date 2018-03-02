@@ -6,10 +6,10 @@ var generateRolloverCloud = function(options, wordList) {
   var svgRect = document.getElementById('rollover').getBoundingClientRect();
 
   // add in tf normalization
-  const allSum = d3.sum(wordList, d => parseInt(d.count, 10));
-  wordList.forEach((d, idx) => { wordList[idx].tfnorm = d.count / allSum; });
+  const allSum = d3.sum(wordList, function(d) { return parseInt(d.count, 10); });
+  wordList.forEach(function(d, idx) { wordList[idx].tfnorm = d.count / allSum; });
 
-  var fullExtent = d3.extent(wordList, d => d.tfnorm)
+  var fullExtent = d3.extent(wordList, function(d) { return d.tfnorm; })
   var colorScale = d3.scaleLinear()
                      .domain(fullExtent)
                      .range([options.minColor, options.maxColor]);
@@ -23,29 +23,29 @@ var generateRolloverCloud = function(options, wordList) {
     .size([svgWidth, options.height])
     .words(wordList)
     .padding(1)
-    .rotate(function(d) { return 0; })
-    .random(() => 0.8) // keeps layout the same everytime
+    .rotate(function() { return 0; })
+    .random(function() { return 0.8; }) // keeps layout the same everytime
     .text(function(d) { return d.text; })
     .font('Arial')
-    .fontSize(d => fontScale(d.tfnorm))
-    .on('end', (wordsAsData) => {
-      console.log(wordsAsData);
+    .fontSize(function(d) { return fontScale(d.tfnorm); })
+    .on('end', function(wordsAsData) {
       d3.select(options.cloudDomId)
         // note: width set inline in viz.html
         .attr('height', options.height)
         .append('g')
-        .attr('transform', `translate(${svgRect.x + (svgWidth / 8)}, ${(svgRect.x / 2) + (options.height / 8)})`)
+        .attr('transform', 'translate(' + (svgRect.x + (svgWidth / 8)) + ', ' + ((svgRect.x / 2) + (options.height / 8)) + ')')
+        // .attr('transform', `translate(${svgRect.x + (svgWidth / 8)}, ${(svgRect.x / 2) + (options.height / 8)})`)
         .selectAll('text')
         .data(wordsAsData)
         .enter()
           .append('text')
             .attr('font-family', 'Lato')
-            .attr('id', d => d.text)
-            .attr('font-size', d => fontScale(d.tfnorm) + 'px')
-            .attr('fill', d => colorScale(d.tfnorm))
+            .attr('id', function(d) { return d.text; })
+            .attr('font-size', function(d) { return fontScale(d.tfnorm) + 'px'; })
+            .attr('fill', function(d) { return colorScale(d.tfnorm); })
             .attr('text-anchor', 'middle')
-            .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
-            .text(d => d.text)
+            .attr('transform', function(d) { return 'translate(' + d.x + ', ' + d.y + ')rotate(' + d.rotate + ')'; })
+            .text(function(d) { return d.text; })
             .on('mouseover', function(d) {
               d3.select(this).transition().duration(200)
                              .attr('fill', '#0000ff')
@@ -59,20 +59,20 @@ var generateRolloverCloud = function(options, wordList) {
                                     .range(['#acb5f9', '#0000ff']);
 
               wordList.forEach(function(word) {
-                var sim = d.similar.find(x => x.text === word.text);
+                var sim = d.similar.find(function(x) { return x.text === word.text; });
                 if (sim) {
                   // highlight similar words
-                  d3.select(`#${word.text}`).transition().duration(200)
+                  d3.select('#' + word.text).transition().duration(200)
                                             .attr('fill', simColorScale(sim.score))
                                             .attr('font-size', fontScale(word.tfnorm) * 1.5)
                                             .attr('font-weight', 'bold')
                                             .attr('pointer-events', 'none');
                   // moves element to front
-                  d3.select(`#${word.text}`).raise();
+                  d3.select('#' + word.text).raise();
                 } else {
                   // fade out all other words
                   if (word.text !== d.text) {
-                    d3.select(`#${word.text}`).transition().duration(200)
+                    d3.select('#' + word.text).transition().duration(200)
                                               .attr('fill', '#cecece')
                                               .attr('font-size', fontScale(word.tfnorm))
                                               .attr('pointer-events', 'none');
@@ -83,7 +83,7 @@ var generateRolloverCloud = function(options, wordList) {
             .on('mouseout', function(d) {
               // return everything back to normal
               wordList.forEach(function(word) {
-                d3.select(`#${word.text}`).transition().duration(100)
+                d3.select('#' + word.text).transition().duration(100)
                                           .attr('fill', colorScale(word.tfnorm))
                                           .attr('font-size', fontScale(word.tfnorm))
                                           .attr('font-weight', 'normal')

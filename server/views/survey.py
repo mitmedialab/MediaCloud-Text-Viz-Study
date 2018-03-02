@@ -39,9 +39,9 @@ def index():
         logger.debug('Request to tutorial page')
 
         # Check for existing cookie
-        if 'USER_COOKIE' in request.cookies:
-            current_user = get_user_from_cookie(request, 'USER_COOKIE')
-            return render_template('tutorial.html', step='tutorial', viz_type=current_user.viz_type)
+        # if 'USER_COOKIE' in request.cookies:
+        #     current_user = get_user_from_cookie(request, 'USER_COOKIE')
+        #     return render_template('tutorial.html', step='tutorial', viz_type=current_user.viz_type)
 
         # Create new user and save to database
         new_user = User()
@@ -73,8 +73,8 @@ def index():
         logger.debug('Request to visualization page')
 
         # check for reload
-        if cookie_names['viz'] in request.cookies:
-            return render_template('error.html')
+        # if cookie_names['viz'] in request.cookies:
+        #     return render_template('error.html')
 
         # Get info for current user
         current_user = get_user_from_cookie(request, 'USER_COOKIE')
@@ -93,8 +93,8 @@ def index():
         logger.debug('Request to feedback page')
 
         # check for reload
-        if cookie_names['feedback'] in request.cookies:
-            return render_template('error.html')
+        # if cookie_names['feedback'] in request.cookies:
+        #     return render_template('error.html')
 
         # save response from previous page (viz)
         save_viz_response(request)
@@ -108,8 +108,8 @@ def index():
         logger.debug('Request to thank-you page')
 
         # check for reload
-        if cookie_names['thanks'] in request.cookies:
-            return render_template('error.html')
+        # if cookie_names['thanks'] in request.cookies:
+        #     return render_template('error.html')
 
         # Save feedback to database
         current_user = get_user_from_cookie(request, 'USER_COOKIE')

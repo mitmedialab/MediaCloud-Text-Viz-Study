@@ -6,11 +6,11 @@ var generateWord2vecCloud = function(options, wordList) {
   var svgContainerWidth = $('#svg-container').width();
 
   // add in tf normalization
-  const allSum = d3.sum(wordList, d => parseInt(d.count, 10));
-  wordList.forEach((d, idx) => { wordList[idx].tfnorm = d.count / allSum; });
+  const allSum = d3.sum(wordList, function(d) { return parseInt(d.count, 10); });
+  wordList.forEach(function(d, idx) { wordList[idx].tfnorm = d.count / allSum; });
 
   // scales
-  var fullExtent = d3.extent(wordList, d => d.tfnorm)
+  var fullExtent = d3.extent(wordList, function(d) { return d.tfnorm; })
   var colorScale = d3.scaleLinear()
                      .domain(fullExtent)
                      .range([options.minColor, options.maxColor]);
@@ -21,10 +21,10 @@ var generateWord2vecCloud = function(options, wordList) {
   const margin = 75;
 
   // NOTE: probs a neater way to do this...
-  const minX = d3.min(wordList, d => d[options.xProperty]);
-  const minY = d3.min(wordList, d => d[options.yProperty]);
-  const maxX = d3.max(wordList, d => d[options.xProperty]);
-  const maxY = d3.max(wordList, d => d[options.yProperty]);
+  const minX = d3.min(wordList, function(d) { return d[options.xProperty]; });
+  const minY = d3.min(wordList, function(d) { return d[options.yProperty]; });
+  const maxX = d3.max(wordList, function(d) { return d[options.xProperty]; });
+  const maxY = d3.max(wordList, function(d) { return d[options.yProperty]; });
   const globalMaxAbs = Math.max(Math.abs(Math.max(minX, minY)), Math.abs(Math.max(maxX, maxY)));
 
   // make scales completely symmetric and centered around 0
@@ -42,7 +42,8 @@ var generateWord2vecCloud = function(options, wordList) {
   d3.select(options.cloudDomId)
     .attr('width', options.width)
     .attr('height', options.height)
-    .attr('transform', `translate(${centerOffsetX},${-centerOffsetY})`);
+    .attr('transform', 'translate(' + centerOffsetX + ', -' + centerOffsetY + ')');
+    // .attr('transform', `translate(${centerOffsetX},${-centerOffsetY})`);
 
   // draw circle
   var circle = d3.arc()
@@ -53,7 +54,8 @@ var generateWord2vecCloud = function(options, wordList) {
   d3.select(options.cloudDomId).append("path")
       .attr('d', circle)
       .attr('fill', '#f9f9f9')
-      .attr('transform', `translate(${xScale(0)},${yScale(0)})`);
+      .attr('transform', 'translate(' + xScale(0) + ', ' + yScale(0) + ')');
+      //.attr('transform', `translate(${xScale(0)},${yScale(0)})`);
 
   // draw arc 'tooltip'
   var arc = d3.arc()
@@ -65,7 +67,8 @@ var generateWord2vecCloud = function(options, wordList) {
     .attr('d', arc)
     .attr('id', 'arc')
     .attr('fill', '#efefef')
-    .attr('transform', `translate(${xScale(0)},${yScale(0)})`)
+    .attr('transform', 'translate(' + xScale(0) + ', ' + yScale(0) + ')')
+    // .attr('transform', `translate(${xScale(0)},${yScale(0)})`)
     .style('opacity', 0);
 
   // Add circle at origin
@@ -104,22 +107,22 @@ var generateWord2vecCloud = function(options, wordList) {
   // Add Text Labels
   const sizeRange = { min: options.minFontSize, max: options.maxFontSize };
 
-  const sortedWords = wordList.sort((a, b) => a.count - b.count); // important to sort so z order is right
+  const sortedWords = wordList.sort(function(a, b) { a.count - b.count }); // important to sort so z order is right
 
   const text = d3.select(options.cloudDomId).selectAll('text')
     .data(sortedWords)
     .enter()
       .append('text')
         .attr('text-anchor', 'middle')
-        .text(d => d.text)
+        .text(function(d) { d.text })
         .attr('font-family', 'Lato')
-        .attr('id', d => d.text)
-        .attr('x', d => xScale(d[options.xProperty]))
-        .attr('y', d => yScale(d[options.yProperty]))
-        .attr('fill', d => colorScale(d.tfnorm))
-        .attr('font-size', (d) => {
+        .attr('id', function(d) { d.text })
+        .attr('x', function(d) { xScale(d[options.xProperty]) })
+        .attr('y', function(d) { yScale(d[options.yProperty]) })
+        .attr('fill', function(d) { colorScale(d.tfnorm) })
+        .attr('font-size', function(d) {
           //const fs = fontSizeComputer(d, fullExtent, sizeRange);
-          return `${fontScale(d.tfnorm)}px`;
+          return fontScale(d.tfnorm) + 'px';
         })
         .on('mouseover', function(d) {
           /* rotate and show arc tooltip */
@@ -143,7 +146,8 @@ var generateWord2vecCloud = function(options, wordList) {
             currentAngle = -90. + currentAngle - offset;
           }
           d3.select('#arc')
-            .attr('transform', `translate(${xScale(0)},${yScale(0)}) rotate(${currentAngle})`);
+            .attr('transform', 'translate(' + xScale(0) + ', ' + yScale(0) + ') rotate(' + currentAngle + ')');
+            // .attr('transform', `translate(${xScale(0)},${yScale(0)}) rotate(${currentAngle})`);
           d3.select('#arc')//.transition().duration(MOUSEOVER_TRANSITION_TIME)
             .style('opacity', 1);
 
@@ -168,16 +172,16 @@ var generateWord2vecCloud = function(options, wordList) {
                                 .domain([COS_SIM_THRESHOLD, 1.0])
                                 .range(['#acb5f9', '#0000ff']);
           wordList.forEach(function(word) {
-            var sim = d.similar.find(x => x.text === word.text);
+            var sim = d.similar.find(function(x) { x.text === word.text });
             if (sim && sim.text !== d.text) {
               // highlight similar words
-              d3.select(`#${word.text}`).transition().duration(MOUSEOVER_TRANSITION_TIME)
+              d3.select('#' + word.text).transition().duration(MOUSEOVER_TRANSITION_TIME)
                                         .attr('fill', simColorScale(sim.score))
                                         .attr('font-size', fontScale(word.tfnorm))
                                         .attr('font-weight', 'bold')
                                         .attr('pointer-events', 'none');
               // moves element to front
-              d3.select(`#${word.text}`).raise();
+              d3.select('#' + word.text).raise();
               // d3.select(options.cloudDomId)
               //   .append('svg:line')
               //   .attr('id', `${word.text}-line`)
@@ -189,7 +193,7 @@ var generateWord2vecCloud = function(options, wordList) {
             } else {
               // fade out all other words
               if (word.text !== d.text) {
-                d3.select(`#${word.text}`).transition().duration(MOUSEOVER_TRANSITION_TIME)
+                d3.select('#' + word.text).transition().duration(MOUSEOVER_TRANSITION_TIME)
                                           .attr('fill', '#e2e2e2')
                                           .attr('pointer-events', 'none');
               }
@@ -200,11 +204,12 @@ var generateWord2vecCloud = function(options, wordList) {
           //reset and hide arc tooltip
           d3.select('#arc')
             .style('opacity', 0)
-            .attr('transform', `translate(${xScale(0)},${yScale(0)}) rotate(${0})`);
+            .attr('transform', 'translate(' + xScale(0) + ', ' + yScale(0) + ') rotate(0)');
+            // .attr('transform', `translate(${xScale(0)},${yScale(0)}) rotate(${0})`);
 
           // return everything back to normal
           wordList.forEach(function(word) {
-            d3.select(`#${word.text}`).transition().duration(100)
+            d3.select('#' + word.text).transition().duration(100)
               .attr('fill', colorScale(word.tfnorm))
               .attr('font-size', fontScale(word.tfnorm))
               .attr('font-weight', 'normal')

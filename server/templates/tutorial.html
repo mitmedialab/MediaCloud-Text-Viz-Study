@@ -21,52 +21,67 @@
                 and find the main words that might identify 2 different ways the media is
                 talking about the topic.
               </p>
-              {% if viz_type == "standard" %}
-                <p>
-                  The visualization you will use to perform this task is called
-                  a <b>word cloud</b>, or <b>tag cloud</b>. The position
-                  of each word is random. The size of a word reflects how often
-                  it is used across news articles. Bigger words were used more
-                  often; smaller words were used less often. The color of a word
-                  shows the same thing; the darker it is, the more it was used.
-                  If you hover a word, it will be highlighted to make it easier
-                  to read.
-                </p>
-              {% elif viz_type == "rollover" %}
-                <p>
-                  The visualization you will use to perform this task is called
-                  a <b>similarity word cloud</b>. The position of each word is random.
-                  The size of a word reflects how often it is used across news
-                  articles. Bigger words were used more often; smaller words
-                  were used less often. The color of a word shows the same thing;
-                  the darker it is, the more it was used. When hovering over to
-                  highlight a word, related words are also highlighted.
-                  The bluer a related word is, the more similar it is to the
-                  word you are hovering over. The ‘relatedness’ is based on some
-                  complicated computations about how often words are used together.
-                </p>
-              {% elif viz_type == "word2vec" %}
-                <p>
-                  The visualization you will use to perform this task is called
-                  <b>the word space</b>. This visualization determines the position of
-                  a word based on how related it is to other words.
-                  The ‘relatedness’ is based on some complicated computations about
-                  how often words are used together.
-                </p>
-                <p>
-                  The size of a word reflects how often it is used across news
-                  articles. Bigger words were used more often; smaller words were
-                  used less often. The color of a word shows the same thing; the
-                  darker it is, the more it was used.
-                </p>
-                <p>
-                  If you hover over a word, related words are also highlighted.
-                  You will also notice a dark gray cone appear. Words within this
-                  cone are related to the word you are hovering over. Words outside
-                  this cone are not related to it very much. The darker a related
-                  word is, the more related it is.
-                </p>
-              {% endif %}
+              <div class="row">
+                <div class="col-lg-7">
+                  {% if viz_type == "standard" %}
+                    <img src="{{ url_for('static', filename='img/standard_static.png') }}">
+                  {% elif viz_type == "rollover" %}
+                    <img src="{{ url_for('static', filename='img/similar_static.png') }}">
+                  {% elif viz_type == "word2vec" %}
+                    <img src="{{ url_for('static', filename='img/space_static.png') }}" style="height: 80%; width: 80%;">
+                  {% endif %}
+                </div>
+                <div class="col-lg-5">
+                  {% if viz_type == "standard" %}
+                    <p>
+                      The visualization you will use to perform this task is called
+                      a <b>word cloud</b>, or <b>tag cloud</b>. The position
+                      of each word is random. The size of a word reflects how often
+                      it is used across news articles. Bigger words were used more
+                      often; smaller words were used less often. The color of a word
+                      shows the same thing; the darker it is, the more it was used.
+                      If you hover a word, it will be highlighted to make it easier
+                      to read.
+                    </p>
+                    {% elif viz_type == "rollover" %}
+                      <p>
+                        The visualization you will use to perform this task is called
+                        a <b>similarity word cloud</b>. The position of each word is random.
+                        The size of a word reflects how often it is used across news
+                        articles. Bigger words were used more often; smaller words
+                        were used less often. The color of a word shows the same thing;
+                        the darker it is, the more it was used. When hovering over to
+                        highlight a word, related words are also highlighted.
+                        The bluer a related word is, the more similar it is to the
+                        word you are hovering over. The ‘relatedness’ is based on some
+                        complicated computations about how often words are used together.
+                      </p>
+                    {% elif viz_type == "word2vec" %}
+                      <p>
+                        The visualization you will use to perform this task is called
+                        <b>the word space</b>. This visualization determines the position of
+                        a word based on how related it is to other words.
+                        The ‘relatedness’ is based on some complicated computations about
+                        how often words are used together.
+                      </p>
+                      <p>
+                        The size of a word reflects how often it is used across news
+                        articles. Bigger words were used more often; smaller words were
+                        used less often. The color of a word shows the same thing; the
+                        darker it is, the more it was used.
+                      </p>
+                      <p>
+                        If you hover over a word, related words are also highlighted.
+                        You will also notice a dark gray cone appear. Words within this
+                        cone are related to the word you are hovering over. Words outside
+                        this cone are not related to it very much. The darker a related
+                        word is, the more related it is.
+                      </p>
+                    {% endif %}
+                </div>
+              </div>
+
+
               <br>
               <hr>
               <br>
@@ -113,7 +128,7 @@
         method: 'GET',
         url: '/vizTutorialData.json',
         contentType: 'application/json',
-        success: (data) => {
+        success: function(data) {
           switch({{ viz_type|tojson|safe }}) {
             case 'rollover':
               var options = {

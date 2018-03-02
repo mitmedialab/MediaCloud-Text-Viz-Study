@@ -16,7 +16,7 @@
             Hover over a word with your mouse pointer and related words will be highlighed in blue.
             {% endif %}
             Try to find the main words that
-            might identify 2 different ways the media talking about the topic. Enter three main words in the form below, along
+            might identify 2 different ways the media is talking about the topic. Enter three main words in the form below, along
             with a name you might give to that theme (based on the words that you think define it).
           </p>
         </div>
@@ -159,7 +159,7 @@
         method: 'GET',
         url: '/vizData.json',
         contentType: 'application/json',
-        success: (data) => {
+        success: function(data) {
           switch({{ viz_type|tojson|safe }}) {
             case 'rollover':
               $('#title').text('Similarity Word Cloud');
