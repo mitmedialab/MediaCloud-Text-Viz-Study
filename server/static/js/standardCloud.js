@@ -18,7 +18,7 @@ var generateStandardCloud = function(options, wordList) {
   var fontScale = d3.scaleLinear()
                     .domain(fullExtent)
                     .range([options.minFontSize, options.maxFontSize]);
-  var translationString = 'translate(' + (svgRect.left + (svgWidth / 8)) + ',' + ((svgRect.left / 2) + (options.height / 8)) + ')';
+  var translationString = 'translate(' + (svgWidth / 3) + ',' + (options.height / 3) + ')';
   console.log(svgRect.left);
   console.log(svgRect.x);
   console.log(svgWidth);

@@ -17,6 +17,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_DIR = 'server/static'
 MODEL_DIR = 'vector-models'
+NORMALIZE = False
 
 # set up logger
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -100,9 +101,16 @@ if __name__ == '__main__':
                     similar.append({'text': other_word['term'], 'count': other_word['count'],
                                     'score': sim_score_2d})
 
+        w2v_x = two_d_embeddings[i][0]
+        w2v_y = two_d_embeddings[i][1]
+        if NORMALIZE:
+            norm = np.linalg.norm(two_d_embeddings[i])
+            w2v_x /= norm
+            w2v_y /= norm
+
         results.append({'text': word['term'], 'count': word['count'],
-                        'similar': similar,'w2v_x': float(two_d_embeddings[i][0]),
-                        'w2v_y': float(two_d_embeddings[i][1])})
+                        'similar': similar,'w2v_x': float(w2v_x),
+                        'w2v_y': float(w2v_y)})
 
     # Write json object to file
     output_file_path = os.path.join(BASE_DIR, OUTPUT_DIR, 'vizData.json')

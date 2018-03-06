@@ -1,5 +1,5 @@
 body {
-  padding: 5% 15% 5% 15%;
+  padding: 5% 0% 5% 0%;
 }
 
 h1 {
@@ -16,4 +16,12 @@ p {
 
 text {
   cursor: default;
+}
+
+.container-fluid {
+  padding: 0% 5% 0% 5% !important;
+}
+
+#word2vec {
+  cursor: zoom-in;
 }

@@ -3,6 +3,8 @@ var generateRolloverCloud = function(options, wordList) {
 
   // calculate absolute position for nice spacing/centering
   var svgWidth = $(options.cloudDomId).width();
+  console.log('width');
+  console.log(svgWidth);
   var svgRect = document.getElementById('rollover').getBoundingClientRect();
 
   // add in tf normalization
@@ -12,12 +14,16 @@ var generateRolloverCloud = function(options, wordList) {
   var fullExtent = d3.extent(wordList, function(d) { return d.tfnorm; })
   var colorScale = d3.scaleLinear()
                      .domain(fullExtent)
-                     .range([options.minColor, options.maxColor]);
+                     .range(['#b4b4b4', '#000000']);
+  var blueColorScale = d3.scaleLinear()
+                         .domain(fullExtent)
+                         .range(['#b4b4ff', '#0000ff']);
 
   var fontScale = d3.scaleLinear()
                     .domain(fullExtent)
                     .range([options.minFontSize, options.maxFontSize]);
-
+console.log(svgRect);
+console.log(svgRect.left);
   // create wordcloud
   d3.layout.cloud()
     .size([svgWidth, options.height])
@@ -33,7 +39,7 @@ var generateRolloverCloud = function(options, wordList) {
         // note: width set inline in viz.html
         .attr('height', options.height)
         .append('g')
-        .attr('transform', 'translate(' + (svgRect.x + (svgWidth / 8)) + ', ' + ((svgRect.x / 2) + (options.height / 8)) + ')')
+        .attr('transform', 'translate(' + (svgWidth / 3) + ', ' + ((options.height / 3)) + ')')
         // .attr('transform', `translate(${svgRect.x + (svgWidth / 8)}, ${(svgRect.x / 2) + (options.height / 8)})`)
         .selectAll('text')
         .data(wordsAsData)
@@ -48,22 +54,17 @@ var generateRolloverCloud = function(options, wordList) {
             .text(function(d) { return d.text; })
             .on('mouseover', function(d) {
               d3.select(this).transition().duration(200)
-                             .attr('fill', '#0000ff')
+                             .attr('fill', blueColorScale(d.tfnorm))
                              .attr('font-size', fontScale(d.tfnorm)*1.5)
                              .attr('font-weight', 'bold');
               d3.select(this).raise();
-
-              // different color scale for every corresponding similarity list
-              var simColorScale = d3.scaleLinear()
-                                    .domain([COS_SIM_THRESHOLD, 1.0])
-                                    .range(['#acb5f9', '#0000ff']);
 
               wordList.forEach(function(word) {
                 var sim = d.similar.find(function(x) { return x.text === word.text; });
                 if (sim) {
                   // highlight similar words
                   d3.select('#' + word.text).transition().duration(200)
-                                            .attr('fill', simColorScale(sim.score))
+                                            .attr('fill', blueColorScale(word.tfnorm))
                                             .attr('font-size', fontScale(word.tfnorm) * 1.5)
                                             .attr('font-weight', 'bold')
                                             .attr('pointer-events', 'none');

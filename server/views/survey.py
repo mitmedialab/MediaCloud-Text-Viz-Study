@@ -39,9 +39,9 @@ def index():
         logger.debug('Request to tutorial page')
 
         # Check for existing cookie
-        # if 'USER_COOKIE' in request.cookies:
-        #     current_user = get_user_from_cookie(request, 'USER_COOKIE')
-        #     return render_template('tutorial.html', step='tutorial', viz_type=current_user.viz_type)
+        if 'USER_COOKIE' in request.cookies:
+            current_user = get_user_from_cookie(request, 'USER_COOKIE')
+            return render_template('tutorial.html', step='tutorial', viz_type=current_user.viz_type)
 
         # Create new user and save to database
         new_user = User()
@@ -51,12 +51,13 @@ def index():
         # Update new user's cookie and ip address
         user_id = new_user.id
         new_user.cookie = 'MC_TEXT_VIZ_USER_{}'.format(user_id)
-        # TODO: double-check this is correct address...?
-        # print 'IP ADDRESS'
+        # TODO: need to get correct IP address!
         # print(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
         # print(request.headers.get('X-Forwarded-For', request.remote_addr))
         # print(request.headers.get('X-Real-IP'))
         new_user.ip_address = request.remote_addr
+        # line below produces key error
+        # new_user.ip_address = os.environ["REMOTE_ADDR"]
 
         # Select and save visualization type
         viz_types = map(lambda x: x.name, list(VizType))
@@ -73,8 +74,8 @@ def index():
         logger.debug('Request to visualization page')
 
         # check for reload
-        # if cookie_names['viz'] in request.cookies:
-        #     return render_template('error.html')
+        if cookie_names['viz'] in request.cookies:
+            return render_template('error.html')
 
         # Get info for current user
         current_user = get_user_from_cookie(request, 'USER_COOKIE')
@@ -93,8 +94,8 @@ def index():
         logger.debug('Request to feedback page')
 
         # check for reload
-        # if cookie_names['feedback'] in request.cookies:
-        #     return render_template('error.html')
+        if cookie_names['feedback'] in request.cookies:
+            return render_template('error.html')
 
         # save response from previous page (viz)
         save_viz_response(request)
@@ -108,8 +109,8 @@ def index():
         logger.debug('Request to thank-you page')
 
         # check for reload
-        # if cookie_names['thanks'] in request.cookies:
-        #     return render_template('error.html')
+        if cookie_names['thanks'] in request.cookies:
+            return render_template('error.html')
 
         # Save feedback to database
         current_user = get_user_from_cookie(request, 'USER_COOKIE')

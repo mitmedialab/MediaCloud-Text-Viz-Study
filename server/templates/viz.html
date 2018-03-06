@@ -1,12 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div>
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12" style="text-align: center">
           <b>*** DO NOT refresh this page or click the back button ***</b>
         </div>
       </div>
       <br>
+      <hr>
       <br>
       <div class="row">
         <div class="col-lg-12">
@@ -15,115 +16,116 @@
             {% if viz_type != 'standard' %}
             Hover over a word with your mouse pointer and related words will be highlighed in blue.
             {% endif %}
-            Then fill in the form below with two main conversations you see, and the key words that you think define it.
+            {% if viz_type == 'word2vec' %}
+            You can also double-click to zoom in and out.
+            {% endif %}
+            Then, fill in the form below with two main conversations you see and the key words that you think define it.
           </p>
         </div>
       </div>
       <br>
-      <hr>
       <br>
       <p id="loading">
         Please wait while visualization loads...
       </p>
       <div class="row">
-        <div class="col-lg-12" id="svg-container">
+        <div class="col-lg-7" id="svg-container">
           <svg id="{{ viz_type }}" style="width: 100%;">
           </svg>
+        </div>
+        <div class="col-lg-5 d-flex align-items-center pl-5">
+          <!--  NOTE: remove class="needs-validation" for quick debugging -->
+          <form action="{{ url_for('index') }}" method="post" class="needs-validation" novalidate>
+            <div class="form-row mb-3">
+              <div class="col-md-6">
+                <label for="theme1"><b>Conversation 1</b></label>
+                <input type="text" class="form-control form-control-lg" name="theme1" placeholder="Name this conversation" required>
+                <div class="invalid-feedback">
+                  Please provide a name.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 mb-2">
+                <b> Key Words </b>
+              </div>
+            </div>
+            <div class="form-row mb-5">
+              <div class="col-md-3">
+                <input type="text" name="theme1_word1" placeholder="Word 1" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input type="text" name="theme1_word2" placeholder="Word 2" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input type="text" name="theme1_word3" placeholder="Word 3" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+            </div>
+            <div class="form-row mb-3">
+              <div class="col-md-6">
+                <label for="theme2"><b>Conversation 2</b></label>
+                <input type="text" name="theme2" placeholder="Name this conversation" class="form-control form-control-lg" required>
+                <div class="invalid-feedback">
+                  Please provide a name.
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-3">
+                <b> Key Words </b>
+              </div>
+            </div>
+            <div class="form-row mb-5">
+              <div class="col-md-3">
+                <input type="text" name="theme2_word1" placeholder="Word 1" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input type="text" name="theme2_word2" placeholder="Word 2" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input type="text" name="theme2_word3" placeholder="Word 3" class="form-control" required>
+                <div class="invalid-feedback">
+                  What is a key word that defines this conversation?
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <input type="submit" value="Submit" class="btn btn-primary">
+              </div>
+            </div>
+            <br>
+            <br>
+            <input type="hidden" name="step" value="feedback">
+            <input type="hidden" name="viz_type" value="{{ viz_type }}">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="start_time" value="{{ start_time }}">
+          </form>
         </div>
       </div>
       <br>
       <hr>
       <br>
-      <!--  NOTE: remove class="needs-validation" for quick debugging -->
-      <form action="{{ url_for('index') }}" method="post" class="needs-validation" novalidate>
-        <div class="form-row">
-          <div class="col-md-6 mb-5">
-            <label for="theme1"><b>Theme 1</b> - <i></i></label>
-            <input type="text" class="form-control form-control-lg" name="theme1" placeholder="Name this conversation" required>
-            <div class="invalid-feedback">
-              Please provide a name.
-            </div>
-          </div>
+      <div class="row">
+        <div class="col-lg-12" style="text-align:center;">
+          - 1 | <b>2</b> | 3 -
         </div>
-        <div class="row mb-2">
-          <div class="col-md-3">
-            <b> Key Words </b>
-          </div>
-        </div>
-        <div class="form-row mb-5">
-          <div class="col-md-3 mb-3">
-            <input type="text" name="theme1_word1" placeholder="Word 1" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-          <div class="col-md-3">
-            <input type="text" name="theme1_word2" placeholder="Word 2" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <input type="text" name="theme1_word3" placeholder="Word 3" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-6 mb-5">
-            <label for="theme2"><b>Conversation 2</b></label>
-            <input type="text" name="theme2" placeholder="Name this conversation" class="form-control form-control-lg" required>
-            <div class="invalid-feedback">
-              Please provide a name.
-            </div>
-          </div>
-        </div>
-        <div class="row mb-2">
-          <div class="col-md-3">
-            <b> Biggest Words </b>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-3 mb-3">
-            <input type="text" name="theme2_word1" placeholder="Word 1" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <input type="text" name="theme2_word2" placeholder="Word 2" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <input type="text" name="theme2_word3" placeholder="Word 3" class="form-control" required>
-            <div class="invalid-feedback">
-              What is a key word that defines this conversation?
-            </div>
-          </div>
-        </div>
-        <br>
-        <hr>
-        <br>
-        <div class="row">
-          <div class="col-lg-12">
-            <input type="submit" value="Submit" class="btn btn-primary float-right">
-          </div>
-        </div>
-        <br>
-        <br>
-        <div class="row">
-          <div class="col-lg-12" style="text-align: center">
-            <b>*** DO NOT refresh this page or click the back button ***</b>
-          </div>
-        </div>
-        <input type="hidden" name="step" value="feedback">
-        <input type="hidden" name="viz_type" value="{{ viz_type }}">
-        <input type="hidden" name="user_id" value="{{ user_id }}">
-        <input type="hidden" name="start_time" value="{{ start_time }}">
-      </form>
+      </div>
     </div>
 
     <!-- JavaScript -->
@@ -160,7 +162,7 @@
         success: function(data) {
           switch({{ viz_type|tojson|safe }}) {
             case 'rollover':
-              $('#title').text('Similarity Word Cloud');
+              $('#title').text('Word Cloud');
               var options = {
                 height: 500,
                 cloudDomId: '#rollover',
@@ -172,7 +174,7 @@
               generateRolloverCloud(options, data);
               break;
             case 'standard':
-              $('#title').text('Standard Word Cloud');
+              $('#title').text('Word Cloud');
               var options = {
                 height: 500,
                 cloudDomId: '#standard',
