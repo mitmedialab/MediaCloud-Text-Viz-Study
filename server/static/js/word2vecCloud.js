@@ -14,10 +14,14 @@ var generateWord2vecCloud = function(options, wordList) {
   var fullExtent = d3.extent(wordList, function(d) { return d.tfnorm; })
   var colorScale = d3.scaleLinear()
                      .domain(fullExtent)
-                     .range(['#b4b4b4', '#000000']);
- var blueColorScale = d3.scaleLinear()
+                     .range(['#bdbdbd', '#000000']);
+  var blueColorScale = d3.scaleLinear()
                         .domain(fullExtent)
-                        .range(['#b4b4ff', '#0000ff']);
+                        .range(['#9ecae1', '#08306b'])
+                        //.range(['#b4b4ff', '#0000ff']);
+  var orangeColorScale = d3.scaleLinear()
+                           .domain(fullExtent)
+                           .range(['#fdae6b', '#7f2704'])
   var fontScale = d3.scaleLinear()
                     .domain(fullExtent)
                     .range([options.minFontSize, options.maxFontSize]);
@@ -118,25 +122,6 @@ var generateWord2vecCloud = function(options, wordList) {
     .attr('height', options.height)
     .attr('transform', 'translate(' + (centerOffsetX) + ', ' + (-centerOffsetY) + ')');
 
-
-  // handle zoom behavior
-  // svg.on("mousedown.zoom", null);
-  // svg.on("mousemove.zoom", null);
-  // svg.on("touchstart.zoom", null);
-
-  var scaledRadius = xScale(0) - yScale(maxRadius) + RADIUS_MARGIN;
-
-  // draw concentric circles
-  var circleContainer = svg.append('g').attr('id', 'concentric-circles');
-  for (var i = 0; i < NUM_CONCENTRIC_CIRCLES; i++) {
-    circleContainer.append("circle")
-      .attr('id', 'circle-' + i)
-      .attr("cx", xScale(0))
-      .attr("cy", yScale(0))
-      .attr("r", scaledRadius * radiusRatios[i])
-      .style("fill", backgroundColors[i]);
-  }
-
   svg.call(zoom)
    .on("dblclick.zoom", function() {
      if (zoomedIn) {
@@ -151,10 +136,8 @@ var generateWord2vecCloud = function(options, wordList) {
    })
    .append('g');
 
-  // remove default zoom scroll behavior
-  svg.on("wheel.zoom", null);
-  svg.on("mousewheel.zoom", null);
-  svg.on("MozMousePixelScroll.zoom", null);
+
+  var scaledRadius = xScale(0) - yScale(maxRadius) + RADIUS_MARGIN;
 
   // draw arc 'tooltip'
   var arcContainer = svg.append('g').attr('id', 'arc-tip');
@@ -166,12 +149,31 @@ var generateWord2vecCloud = function(options, wordList) {
   arcContainer.append("path")
     .attr('d', arc)
     .attr('id', 'arc')
-    .attr('fill', '#eaeaff')
+    .attr('fill', '#f2f2ff')
     .attr('transform', 'translate(' + xScale(0) + ', ' + yScale(0) + ')')
     .style('opacity', 0);
 
+  // draw concentric circles
+  var circleContainer = svg.append('g').attr('id', 'concentric-circles');
+  for (var i = 0; i < NUM_CONCENTRIC_CIRCLES; i++) {
+    circleContainer.append("circle")
+      .attr('id', 'circle-' + i)
+      .attr("cx", xScale(0))
+      .attr("cy", yScale(0))
+      .attr("r", scaledRadius * radiusRatios[i])
+      .attr('stroke', '#efefef')
+      .style('fill', 'none');
+      //.style("fill", backgroundColors[i]);
+  }
+
+  // remove default zoom scroll behavior
+  svg.on("wheel.zoom", null);
+  svg.on("mousewheel.zoom", null);
+  svg.on("MozMousePixelScroll.zoom", null);
+
+
   // axis polar coord lines
-  const lineColor = 'white';
+  const lineColor = '#efefef';
   svg.append('svg:line')
     .attr('id', 'pos-y-axis')
     .attr('x1', xScale(0))
@@ -253,7 +255,7 @@ var generateWord2vecCloud = function(options, wordList) {
         .attr('id', function(d) { return d.text; })
         .attr('x', function(d) { return xScale(d[options.xProperty]); })
         .attr('y', function(d) { return yScale(d[options.yProperty]); })
-        .attr('fill', function(d) { return colorScale(d.tfnorm); })
+        .attr('fill', function(d) { return blueColorScale(d.tfnorm); })
         .attr('font-size', function(d) {
           return fontScale(d.tfnorm) + 'px';
         })
@@ -285,7 +287,7 @@ var generateWord2vecCloud = function(options, wordList) {
             .style('opacity', 1);
 
           d3.select(this).transition().duration(MOUSEOVER_TRANSITION_TIME)
-                         .attr('fill', blueColorScale(d.tfnorm))
+                         .attr('fill', orangeColorScale(d.tfnorm))
                          .attr('font-size', fontScale(d.tfnorm))
                          .attr('font-weight', 'bold');
           // moves element to front
@@ -296,7 +298,7 @@ var generateWord2vecCloud = function(options, wordList) {
             if (sim && sim.text !== d.text) {
               // highlight similar words
               d3.select('#' + word.text).transition().duration(MOUSEOVER_TRANSITION_TIME)
-                                        .attr('fill', blueColorScale(word.tfnorm))
+                                        .attr('fill', orangeColorScale(word.tfnorm))
                                         .attr('font-size', fontScale(word.tfnorm))
                                         .attr('font-weight', 'bold')
                                         .attr('pointer-events', 'none');
@@ -321,7 +323,7 @@ var generateWord2vecCloud = function(options, wordList) {
           // return everything back to normal
           wordList.forEach(function(word) {
             d3.select('#' + word.text).transition().duration(100)
-              .attr('fill', colorScale(word.tfnorm))
+              .attr('fill', blueColorScale(word.tfnorm))
               .attr('font-size', fontScale(word.tfnorm))
               .attr('font-weight', 'normal')
               .attr('pointer-events', 'auto');
