@@ -3,8 +3,6 @@ var generateRolloverCloud = function(options, wordList) {
 
   // calculate absolute position for nice spacing/centering
   var svgWidth = $(options.cloudDomId).width();
-  console.log('width');
-  console.log(svgWidth);
   var svgRect = document.getElementById('rollover').getBoundingClientRect();
 
   // add in tf normalization
@@ -17,13 +15,12 @@ var generateRolloverCloud = function(options, wordList) {
                      .range(['#b4b4b4', '#000000']);
   var blueColorScale = d3.scaleLinear()
                          .domain(fullExtent)
-                         .range(['#b4b4ff', '#0000ff']);
+                         .range(['#9ecae1', '#08306b']);
 
   var fontScale = d3.scaleLinear()
                     .domain(fullExtent)
                     .range([options.minFontSize, options.maxFontSize]);
-console.log(svgRect);
-console.log(svgRect.left);
+
   // create wordcloud
   d3.layout.cloud()
     .size([svgWidth, options.height])

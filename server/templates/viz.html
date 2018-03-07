@@ -13,10 +13,11 @@
         <div class="col-lg-12">
           <h1 id="title"></h1>
           <p>Explore this visualization of the words online media used to report on the Ebola outbreak in 2014.
-            {% if viz_type != 'standard' %}
+            {% if viz_type != 'rollover' %}
             Hover over a word with your mouse pointer and related words will be highlighed in blue.
             {% endif %}
             {% if viz_type == 'word2vec' %}
+            Hover over a word with your mouse pointer and related words will be highlighed in orange.
             You can also double-click to zoom in and out.
             {% endif %}
             Then, fill in the form below with two main conversations you see and the key words that you think define it.

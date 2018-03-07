@@ -3,7 +3,7 @@
     <div>
       <form action="{{ url_for('index') }}" method="post">
         <div class="container-fluid">
-          <div class="row">
+          <div class="row mb-5">
             <div class="col-lg-12">
               <h2> Getting Started </h2>
               <p>
@@ -11,7 +11,7 @@
               </p>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-5">
             <div class="col-lg-7">
               {% if viz_type == "standard" %}
               <img src="{{ url_for('static', filename='img/standard_static.png') }}">
@@ -31,32 +31,35 @@
               </p>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-5">
             <div class="col-lg-7">
               {% if viz_type == "standard" %}
               <img src="{{ url_for('static', filename='img/standard_highlight.png') }}">
               {% elif viz_type == "rollover" %}
               <img src="{{ url_for('static', filename='img/similar_highlight.png') }}">
               {% elif viz_type == "word2vec" %}
-              <img src="{{ url_for('static', filename='img/space_highlight.png') }}" style="height: 90%; width: 90%;">
+              <img src="{{ url_for('static', filename='img/space_highlight.png') }}">
               {% endif %}
             </div>
             <div class="col-lg-5 d-flex align-items-center">
               <p>
+                {% if viz_type == "standard" %}
                 When you hover over a word with your mouse, it turns <b>blue</b> to make it easier to read.
-                {% if viz_type == "rollover" %}
-                Words that are often used in the same context as that word also turn blue. This 'relatedness' is based on an algorithmic analysis of how words are used together.
+                {% elif viz_type == "rollover" %}
+                When you hover over a word with your mouse, it turns <b>blue</b> to make it easier to read.
+                Words that turn blue are all used in similar ways. This 'similarity' is based on an algorithmic analysis of how words are used together.
                 {% elif viz_type == "word2vec" %}
-                Words that turn blue, and are within the dark background cone, are all used in similar ways. This 'similarity' is based on an algorithmic analysis of how all the words are used together.
+                When you hover over a word with your mouse, it turns <b>orange</b> to make it easier to read.
+                Words that turn orange, and that are within the light blue cone, are all used in similar ways. This 'similarity' is based on an algorithmic analysis of how all the words are used together.
                 {% endif %}
               </p>
             </div>
           </div>
           <br>
           <br>
-          <div class="row">
+          <div class="row mb-5">
             <div class="col-lg-12">
-              <h2> Identifying Conversations </h2>
+              <h2> Finding Conversations </h2>
               <p>
                 {% if viz_type == "standard" %}
                 You can try to identify different conversations by looking at words that go together.
@@ -68,34 +71,34 @@
               <p>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-5">
             <div class="col-lg-7">
               {% if viz_type == "standard" %}
               <img src="{{ url_for('static', filename='img/standard_conversation.png') }}">
               {% elif viz_type == "rollover" %}
               <img src="{{ url_for('static', filename='img/similar_political.png') }}">
               {% elif viz_type == "word2vec" %}
-              <img src="{{ url_for('static', filename='img/space_political.png') }}" style="height: 90%; width: 90%;">
+              <img src="{{ url_for('static', filename='img/space_political.png') }}">
               {% endif %}
             </div>
             <div class="col-lg-5 d-flex align-items-center">
               <p>
                 {% if viz_type == "standard" %}
-                Starting with bigger words, we can see that "clinton", "trump", and "obama"; that suggests a <i>political</i> conversation. A different conversation could be about <i>alternative energy</i> - indicated by "sustainable", "solar", and "renewable". This is the information we want you to identify and enter.
+                Starting with bigger words, we can see words like "clinton", "trump", and "obama"; that suggests a <i>political</i> conversation. A different conversation could be about <i>alternative energy</i> - indicated by "sustainable", "solar", and "renewable". This is the information we want you to identify and enter.
                 {% elif viz_type == "rollover" %}
                 For instance, if you rollover "trump", then "obama" and "clinton" turn blue; you might name this a <i>political</i> conversation.
                 {% elif viz_type == "word2vec" %}
-                For instance, if you rollover "trump", then "obama" and "clinton" turn blue; you might name this a <i>political</i> conversation.
+                For instance, if you rollover "trump", then "obama" and "clinton" turn orange; you might name this a <i>political</i> conversation.
                 {% endif %}
               <p>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-5">
             <div class="col-lg-7">
               {% if viz_type == "rollover" %}
               <img src="{{ url_for('static', filename='img/similar_energy.png') }}">
               {% elif viz_type == "word2vec" %}
-              <img src="{{ url_for('static', filename='img/space_emissions.png') }}" style="height: 90%; width: 90%;">
+              <img src="{{ url_for('static', filename='img/space_emissions.png') }}">
               {% endif %}
             </div>
             <div class="col-lg-5 d-flex align-items-center">
@@ -104,7 +107,7 @@
                 Rollover "sustainable" and you'll see "renewable" and "solar" turn blue; you might name this an <i>alternative energy</i> conversation.
                 This is the information we want you to identify and enter.
                 {% elif viz_type == "word2vec" %}
-                Rollover "emissions" and you'll see "climate" and "china" turn blue; you might name this an <i>emissions negotiation</i> conversation.
+                Rollover "emissions" and you'll see "climate" and "china" turn orange; you might name this an <i>emissions negotiation</i> conversation.
                 This is the information we want you to identify and enter.
                 {% endif %}
               <p>
