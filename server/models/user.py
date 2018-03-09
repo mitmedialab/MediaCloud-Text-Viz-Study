@@ -24,7 +24,7 @@ class User(Base):
     theme2_word3 = Column('theme2_word3', String(120))
     start_time = Column('start_time', String(50))
     end_time = Column('end_time', String(50))
-    feedback = Column('feedback', String(250))
+    feedback = Column('feedback', String(1500))
 
     def __repr__(self):
         return '<User {}>\nConsent: {},\nResponses: {},\nFeedback: {}' \
