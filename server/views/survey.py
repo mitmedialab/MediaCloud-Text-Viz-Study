@@ -40,8 +40,7 @@ def index():
 
         # Check for existing cookie
         if 'USER_COOKIE' in request.cookies:
-            current_user = get_user_from_cookie(request, 'USER_COOKIE')
-            return render_template('tutorial.html', step='tutorial', viz_type=current_user.viz_type)
+            return render_template('error.html')
 
         # Create new user and save to database
         new_user = User()
