@@ -286,30 +286,45 @@ var generateWord2vecCloud = function(options, wordList) {
           d3.select('#arc')
             .style('opacity', 1);
 
+          // check for re-render (IE)
+          if (!d3.select(this).classed('raised')) {
+            // move element to front
+            d3.select(this).raise();
+            d3.select(this).classed('raised', true);
+          }
+
           d3.select(this).transition().duration(MOUSEOVER_TRANSITION_TIME)
                          .attr('fill', orangeColorScale(d.tfnorm))
                          .attr('font-size', fontScale(d.tfnorm))
                          .attr('font-weight', 'bold');
-          // moves element to front
-          d3.select(this).raise();
 
           wordList.forEach(function(word) {
-            var sim = d.similar.find(function(x) { return x.text === word.text; });
-            if (sim && sim.text !== d.text) {
+            var sim = d.similar.filter(function(x) { return x.text === word.text; });
+            if (sim.length > 0 && sim[0].text !== d.text) {
+              // check for re-render (IE)
+              if (!d3.select('#' + word.text).classed('raised')) {
+                // move element to front
+                d3.select('#' + word.text).raise();
+                d3.select('#' + word.text).classed('raised', true);
+              }
               // highlight similar words
-              d3.select('#' + word.text).transition().duration(MOUSEOVER_TRANSITION_TIME)
-                                        .attr('fill', orangeColorScale(word.tfnorm))
-                                        .attr('font-size', fontScale(word.tfnorm))
-                                        .attr('font-weight', 'bold')
-                                        .attr('pointer-events', 'none');
-              // moves element to front
-              d3.select('#' + word.text).raise();
+              d3.select('#' + word.text)
+                .transition()
+                .duration(MOUSEOVER_TRANSITION_TIME)
+                .attr('fill', orangeColorScale(word.tfnorm))
+                .attr('font-size', fontScale(word.tfnorm))
+                .attr('font-weight', 'bold')
+                .attr('pointer-events', 'none');
             } else {
-              // fade out all other words
               if (word.text !== d.text) {
-                d3.select('#' + word.text).transition().duration(MOUSEOVER_TRANSITION_TIME)
-                                          .attr('fill', '#e2e2e2')
-                                          .attr('pointer-events', 'none');
+                // check for re-render (IE)
+                d3.select('#' + word.text).classed('raised', false);
+                // fade out all other words
+                d3.select('#' + word.text)
+                  .transition()
+                  .duration(MOUSEOVER_TRANSITION_TIME)
+                  .attr('fill', '#e2e2e2')
+                  .attr('pointer-events', 'none');
               }
             }
           });
@@ -322,6 +337,7 @@ var generateWord2vecCloud = function(options, wordList) {
 
           // return everything back to normal
           wordList.forEach(function(word) {
+            d3.select('#' + word.text).classed('raised', false);
             d3.select('#' + word.text).transition().duration(100)
               .attr('fill', blueColorScale(word.tfnorm))
               .attr('font-size', fontScale(word.tfnorm))
