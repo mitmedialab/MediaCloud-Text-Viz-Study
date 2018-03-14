@@ -125,6 +125,7 @@ var generateWord2vecCloud = function(options, wordList) {
   svg.call(zoom)
    .on("dblclick.zoom", function() {
      if (zoomedIn) {
+      svg.style('cursor', 'default'); // for IE since zoom-in isn't supported
       svg.style('cursor', 'zoom-in');
       svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
       zoomedIn = false;
