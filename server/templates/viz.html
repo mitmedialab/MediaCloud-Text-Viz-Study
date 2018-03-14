@@ -29,13 +29,12 @@
       <p id="loading">
         Please wait while visualization loads...
       </p>
-      <div class="row">
+      <div class="row d-flex align-items-center">
         <div class="col-lg-7" id="svg-container">
           <svg id="{{ viz_type }}" style="width: 100%;">
           </svg>
         </div>
-        <div class="col-lg-5 d-flex align-items-center pl-5">
-          <!--  NOTE: remove class="needs-validation" for quick debugging -->
+        <div class="col-lg-5 pl-5">
           <form action="{{ url_for('index') }}" method="post" class="needs-validation" novalidate>
             <div class="form-row mb-3">
               <div class="col-md-6">

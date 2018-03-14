@@ -50,26 +50,37 @@ var generateRolloverCloud = function(options, wordList) {
             .attr('transform', function(d) { return 'translate(' + d.x + ', ' + d.y + ')rotate(' + d.rotate + ')'; })
             .text(function(d) { return d.text; })
             .on('mouseover', function(d) {
+              // check for re-render (IE)
+              if (!d3.select(this).classed('raised')) {
+                // move element to front
+                d3.select(this).raise();
+                d3.select(this).classed('raised', true);
+              }
               d3.select(this).transition().duration(200)
                              .attr('fill', blueColorScale(d.tfnorm))
                              .attr('font-size', fontScale(d.tfnorm)*1.5)
                              .attr('font-weight', 'bold');
-              d3.select(this).raise();
 
               wordList.forEach(function(word) {
-                var sim = d.similar.find(function(x) { return x.text === word.text; });
-                if (sim) {
+                var sim = d.similar.filter(function(x) { return x.text === word.text; });
+                if (sim.length > 0 && sim[0].text !== d.text) {
+                  // check for re-render (IE)
+                  if (!d3.select('#' + word.text).classed('raised')) {
+                    // move element to front
+                    d3.select('#' + word.text).raise();
+                    d3.select('#' + word.text).classed('raised', true);
+                  }
                   // highlight similar words
                   d3.select('#' + word.text).transition().duration(200)
                                             .attr('fill', blueColorScale(word.tfnorm))
                                             .attr('font-size', fontScale(word.tfnorm) * 1.5)
                                             .attr('font-weight', 'bold')
                                             .attr('pointer-events', 'none');
-                  // moves element to front
-                  d3.select('#' + word.text).raise();
                 } else {
                   // fade out all other words
                   if (word.text !== d.text) {
+                    // check for re-render (IE)
+                    d3.select('#' + word.text).classed('raised', false);
                     d3.select('#' + word.text).transition().duration(200)
                                               .attr('fill', '#cecece')
                                               .attr('font-size', fontScale(word.tfnorm))
@@ -79,8 +90,9 @@ var generateRolloverCloud = function(options, wordList) {
               });
             })
             .on('mouseout', function(d) {
-              // return everything back to normal
               wordList.forEach(function(word) {
+                // return everything back to normal
+                d3.select('#' + word.text).classed('raised', false);
                 d3.select('#' + word.text).transition().duration(100)
                                           .attr('fill', colorScale(word.tfnorm))
                                           .attr('font-size', fontScale(word.tfnorm))
